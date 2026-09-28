@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소셜톡 (SocialTalk) - 화용언어 & 사회적 의사소통 10단계 학습</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-child mode-standard">
+
+    <!-- Top Bar / Accessibility Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand" onclick="app.navToHome()">
+                <div class="brand-icon"><i class="fa-solid fa-comments"></i></div>
+                <div class="brand-text">
+                    <span class="brand-name">소셜톡 <small>SocialTalk</small></span>
+                    <span class="brand-sub">화용언어 & 사회적 의사소통 단계별 학습</span>
+                </div>
+            </div>
+
+            <!-- Profile Summary Badge -->
+            <div class="profile-badge-summary" id="profileBadgeSummary" onclick="app.showProfileModal()">
+                <span class="badge-tag age-tag" id="summaryAge">아동</span>
+                <span class="badge-tag level-tag" id="summaryLevel">초급</span>
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+
+            <!-- Accessibility Toolbar -->
+            <div class="accessibility-toolbar">
+                <div class="tool-item" title="TTS 읽기 속도">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <select id="ttsRateSelect" onchange="app.setTtsRate(this.value)">
+                        <option value="0.7">0.7x (천천히)</option>
+                        <option value="1.0" selected>1.0x (보통)</option>
+                        <option value="1.2">1.2x (빠르게)</option>
+                    </select>
+                </div>
+                <button class="tool-btn" id="highContrastToggle" title="고대비 모드 (ADHD/시각 배려)" onclick="app.toggleHighContrast()">
+                    <i class="fa-solid fa-circle-half-stroke"></i> <span>고대비</span>
+                </button>
+                <button class="tool-btn" id="focusModeToggle" title="초점 모드 (산만함 방지)" onclick="app.toggleFocusMode()">
+                    <i class="fa-solid fa-expand"></i> <span>집중모드</span>
+                </button>
+                <button class="tool-btn" id="aacOpenBtn" title="AAC 보안대체의사소통 문장 카드" onclick="app.openAacModal()">
+                    <i class="fa-solid fa-icons"></i> <span>AAC 문장</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+
+        <!-- SECTION 1: Profile & Target Selection Screen (Initial / Settings) -->
+        <section id="profileView" class="view-section active">
+            <div class="welcome-hero">
+                <h1>반갑습니다! 맞춤형 의사소통 학습을 시작합니다.</h1>
+                <p>사용자 프로필을 설정하면 어휘, 상황 톤앤매너, UI 디자인이 학습자에 맞게 변환됩니다.</p>
+            </div>
+
+            <div class="profile-card-container">
+                <!-- Age Group Selection -->
+                <div class="profile-card">
+                    <h2><i class="fa-solid fa-user-group"></i> 1. 학습자 연령대 선택</h2>
+                    <p class="card-desc">연령에 맞춘 상황 톤앤매너와 그래픽 테마가 적용됩니다.</p>
+                    <div class="option-grid" id="ageOptions">
+                        <div class="option-box active" data-age="child" onclick="app.selectAge('child')">
+                            <div class="opt-icon"><i class="fa-solid fa-child-reaching"></i></div>
+                            <div class="opt-title">아동 (학령기)</div>
+                            <div class="opt-sub">친근한 그래픽과 칭찬 피드백, 기초 사회적 단서</div>
+                        </div>
+                        <div class="option-box" data-age="youth" onclick="app.selectAge('youth')">
+                            <div class="opt-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div class="opt-title">청소년</div>
+                            <div class="opt-sub">학교·또래 갈등, 동아리, SNS communication</div>
+                        </div>
+                        <div class="option-box" data-age="adult" onclick="app.selectAge('adult')">
+                            <div class="opt-icon"><i class="fa-solid fa-briefcase"></i></div>
+                            <div class="opt-title">성인</div>
+                            <div class="opt-sub">직장, 실생활, 인포그래픽 UI, 정중한 톤앤매너</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Level Selection -->
+                <div class="profile-card">
+                    <h2><i class="fa-solid fa-layer-group"></i> 2. 화용 언어 학습 수준</h2>
+                    <p class="card-desc">언어 복합도 및 단서의 명시성 수준을 결정합니다.</p>
+                    <div class="option-grid" id="levelOptions">
+                        <div class="option-box active" data-level="beginner" onclick="app.selectLevel('beginner')">
+                            <div class="opt-title">초급 Level 1</div>
+                            <div class="opt-sub">직관적 단서, 단문 표현, AAC 시각 카드 적극 활용</div>
+                        </div>
+                        <div class="option-box" data-level="intermediate" onclick="app.selectLevel('intermediate')">
+                            <div class="opt-title">중급 Level 2</div>
+                            <div class="opt-sub">간접적 의도 파악, 복합문, 관점 전환 연습</div>
+                        </div>
+                        <div class="option-box" data-level="advanced" onclick="app.selectLevel('advanced')">
+                            <div class="opt-title">고급 Level 3</div>
+                            <div class="opt-sub">암묵적 규칙, 유연한 사회적 갈등 해결, 대화 전략</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-bar-center">
+                <button class="btn btn-primary btn-large" onclick="app.confirmProfileAndStart()">
+                    학습 시작하기 <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Category & Scenario Selection View -->
+        <section id="categoryView" class="view-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title"><i class="fa-solid fa-cubes"></i> 사회적 의사소통 학습 영역</h2>
+                    <p class="section-sub">학습하고 싶은 의사소통 카테고리와 시나리오를 선택하세요.</p>
+                </div>
+                <div class="user-status-pill">
+                    <span id="activeProfileText">아동 · 초급 모드</span>
+                </div>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="category-grid" id="categoryGrid">
+                <!-- Injected dynamically via JS -->
+            </div>
+
+            <!-- Scenario List Container for selected category -->
+            <div id="scenarioSection" class="scenario-section hidden">
+                <div class="scenario-header">
+                    <h3 id="selectedCategoryTitle"><i class="fa-solid fa-list-check"></i> 선택한 영역 시나리오</h3>
+                    <button class="btn btn-sm btn-outline" onclick="app.closeScenarios()">닫기</button>
+                </div>
+                <div class="scenario-grid" id="scenarioGrid">
+                    <!-- Injected dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: 10-Step Interactive Pragmatic Engine View -->
+        <section id="engineView" class="view-section">
+            
+            <!-- Engine Top Bar: Scenario Info & Progress Tracker -->
+            <div class="engine-header">
+                <button class="btn btn-icon btn-outline" onclick="app.navToCategory()" title="목록으로 돌아가기">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div class="scenario-meta">
+                    <span class="category-tag" id="engineCatTag">학교생활</span>
+                    <h2 id="engineScenarioTitle">선생님께 질문이 있어요</h2>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="app.readCurrentStepTTS()">
+                    <i class="fa-solid fa-volume-high"></i> 상황 읽기
+                </button>
+            </div>
+
+            <!-- 10-Step Stepper Navigation -->
+            <div class="stepper-bar">
+                <div class="stepper-track" id="stepperTrack">
+                    <!-- 10 Steps injected via JS -->
+                </div>
+            </div>
+
+            <!-- Step Content Container -->
+            <div class="step-content-card" id="stepContentCard">
+                <!-- Dynamic Content Rendered Here -->
+            </div>
+
+            <!-- Bottom Control Bar -->
+            <div class="engine-footer">
+                <button class="btn btn-outline" id="prevStepBtn" onclick="app.prevStep()">
+                    <i class="fa-solid fa-arrow-left"></i> 이전 단계
+                </button>
+
+                <div class="step-indicator" id="stepIndicatorText">
+                    단계 1 / 10
+                </div>
+
+                <button class="btn btn-primary" id="nextStepBtn" onclick="app.nextStep()">
+                    다음 단계 <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- AAC Sentence Builder Modal -->
+    <div class="modal-overlay" id="aacModal">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-icons"></i> AAC 보안대체의사소통 상징 문장 빌더</h3>
+                <button class="btn-close" onclick="app.closeAacModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">상징 단어 카드를 순서대로 선택하여 적절한 의사소통 문장을 구성해 보세요.</p>
+                
+                <!-- Created Sentence Preview Slot -->
+                <div class="aac-sentence-slot">
+                    <div class="slot-label">내가 만든 문장:</div>
+                    <div class="slot-tiles" id="aacSlotTiles">
+                        <span class="placeholder-text">아래 카드를 클릭하여 문장을 조합하세요...</span>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="app.clearAacSentence()"><i class="fa-solid fa-trash"></i> 지우기</button>
+                </div>
+
+                <!-- AAC Categories & Tiles Grid -->
+                <div class="aac-categories-tab" id="aacTabs">
+                    <button class="tab-btn active" onclick="app.switchAacCategory('who')">누가/상대</button>
+                    <button class="tab-btn" onclick="app.switchAacCategory('action')">요청/행동</button>
+                    <button class="tab-btn" onclick="app.switchAacCategory('feeling')">감정/상태</button>
+                    <button class="tab-btn" onclick="app.switchAacCategory('polite')">정중한 표현</button>
+                </div>
+
+                <div class="aac-tiles-grid" id="aacTilesGrid">
+                    <!-- Dynamic Tiles -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.speakAacSentence()">
+                    <i class="fa-solid fa-volume-high"></i> 소리로 듣기
+                </button>
+                <button class="btn btn-primary" onclick="app.applyAacToEngine()">
+                    <i class="fa-solid fa-check"></i> 이 문장으로 답변하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement Report Modal (Step 10 or Full View) -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-card modal-xl">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-chart-pie"></i> 종합 화용언어 수행 리포트</h3>
+                <button class="btn-close" onclick="app.closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="reportModalBody">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="window.print()">
+                    <i class="fa-solid fa-print"></i> 리포트 인쇄 / PDF 저장
+                </button>
+                <button class="btn btn-primary" onclick="app.closeReportModal(); app.navToCategory();">
+                    새로운 시나리오 학습하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="scenarios.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
